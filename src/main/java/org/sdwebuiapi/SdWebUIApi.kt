@@ -1,7 +1,7 @@
 package org.sdwebuiapi
 
-import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.node.ObjectNode
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
 import java.util.*
@@ -29,7 +29,94 @@ class SdWebUIApi constructor(
                 baseurl = "http://{host}:{port}/sdapi/v1"
             }
     }
-    fun text2img(){
+    fun text2img(enable_hr:Boolean=false,
+                 denoising_strength: Double =0.7,
+                 firstphase_width: Int =0,
+                 firstphase_height: Int =0,
+                 hr_scale:Int =2,
+                 hr_upscaler: HiResUpscaler =HiResUpscaler.Latent,
+                 hr_second_pass_steps: Int =0,
+                 hr_resize_x: Int =0,
+                 hr_resize_y: Int =0,
+                 prompt: String ="",
+                 styles: String ="[]",
+                 seed: Int =-1,
+                 subseed: Int =-1,
+                 subseed_strength: Double =0.0,
+                 seed_resize_from_h: Int =0,
+                 seed_resize_from_w: Int =0,
+                 sampler_name: String =this.sampler,
+                 sampler_index: String =this.sampler,
+                 batch_size: Int =1,
+                 n_iter: Int =1,
+                 steps: Int =this.steps,
+                 cfg_scale: Double =7.0,
+                 width: Int =512,
+                 height: Int =512,
+                 restore_faces: Boolean =false,
+                 tiling: Boolean =false,
+                 do_not_save_samples: Boolean =false,
+                 do_not_save_grid: Boolean =false,
+                 negative_prompt: String ="",
+                 eta: Double =1.0,
+                 s_churn: Int =0,
+                 s_tmax: Int =0,
+                 s_tmin: Int =0,
+                 s_noise: Int =1,
+                 override_settings: String ="{}",
+                 override_settings_restore_afterwards: Boolean =true,
+                 script_args: String ="[]",
+                 script_name: String ="",
+                 send_images: Boolean =true,
+                 save_images: Boolean =false,
+                 alwaysonscripts: String ="{}",
+                 ): WebUIApiResult? {
+        var playload = """
+            {
+            "enable_hr": $enable_hr,
+            "hr_scale": $hr_scale,
+            "hr_upscaler": $hr_upscaler,
+            "hr_second_pass_steps": $hr_second_pass_steps,
+            "hr_resize_x": $hr_resize_x,
+            "hr_resize_y": $hr_resize_y,
+            "denoising_strength": $denoising_strength,
+            "firstphase_width": $firstphase_width,
+            "firstphase_height": $firstphase_height,
+            "prompt": $prompt,
+            "styles": $styles,
+            "seed": $seed,
+            "subseed": $subseed,
+            "subseed_strength": $subseed_strength,
+            "seed_resize_from_h": $seed_resize_from_h,
+            "seed_resize_from_w": $seed_resize_from_w,
+            "batch_size": $batch_size,
+            "n_iter": $n_iter,
+            "steps": $steps,
+            "cfg_scale": $cfg_scale,
+            "width": $width,
+            "height": $height,
+            "restore_faces": $restore_faces,
+            "tiling": $tiling,
+            "do_not_save_samples": $do_not_save_samples,
+            "do_not_save_grid": $do_not_save_grid,
+            "negative_prompt": $negative_prompt,
+            "eta": $eta,
+            "s_churn": $s_churn,
+            "s_tmax": $s_tmax,
+            "s_tmin": $s_tmin,
+            "s_noise": $s_noise,
+            "override_settings": $override_settings,
+            "override_settings_restore_afterwards": $override_settings_restore_afterwards,
+            "sampler_name": $sampler_name,
+            "sampler_index": $sampler_index,
+            "script_name": $script_name,
+            "script_args": $script_args,
+            "send_images": $send_images,
+            "save_images": $save_images,
+            "alwayson_scripts": $alwaysonscripts,
+            }
+        """.trimIndent()
+        return postAndGetApiResult("$baseurl/txt2img",playload)
 
     }
     fun text2img(json: String): WebUIApiResult? {
